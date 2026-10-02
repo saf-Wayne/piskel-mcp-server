@@ -1,0 +1,30 @@
+name: Prepare Release Build
+
+# Trigger the workflow when a official GitHub release is created
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone the repository code onto the runner
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js on the runner environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*' # Installs the latest Long-Term Support version
+          cache: 'npm'          # Caches npm dependencies to speed up future builds
+
+      # Step 3: Clean install dependencies (recommended over 'npm install' for CI)
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Compile/build the project
+      - name: Build project
+        run: npm run build
