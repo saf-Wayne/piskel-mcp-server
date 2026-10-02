@@ -5,10 +5,11 @@ on:
     types: [created]
 
 permissions:
-  contents: write # Required to upload assets to the release page
+  contents: write
+  id-token: write # Required if your npm package uses modern provenance mapping
 
 jobs:
-  build-and-release:
+  build-release-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +21,8 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
+          # Configures the runner to point to the official npm registry
+          registry-url: 'https://npmjs.org'
 
       - name: Install dependencies
         run: npm ci
@@ -27,12 +30,16 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # Step 5: Compress the dist folder into a zip file
       - name: Archive production artifacts
         run: zip -r dist.zip dist/
 
-      # Step 6: Upload the zip archive directly to the release page
       - name: Upload assets to Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist.zip
+
+      # New Step: Publish directly to the npm Registry
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
