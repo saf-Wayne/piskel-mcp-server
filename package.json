@@ -1,6 +1,9 @@
 {
-  "name": "@yafeiaa/piskel-mcp-server",
-  "version": "1.0.0",
+  "name": "@saf-Wayne/piskel-mcp-server",
+  "version": "1.0.1",
+  "publishConfig": {
+    "access": "public"
+  }
   "description": "MCP Server for Piskel pixel art editor - derived from Piskel (Apache-2.0)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
